@@ -1,47 +1,42 @@
 import pygame, sys, random
 
-WIDTH = 800
-HEIGHT = 600
-
 
 class Screen:
 
     def __init__(self):
-        self.width = WIDTH
-        self.height = HEIGHT
+        self.width = 400
+        self.height = 300
         self.size = self.width, self.height
-        self.bg_color = 255, 240, 245
+        self.bg_color = 255, 255, 240
 
     def make_screen(self):
-        screen = pygame.display.set_mode(self.size, pygame.RESIZABLE)
-        return screen
+        return pygame.display.set_mode(self.size, pygame.RESIZABLE)
 
-    def resize_screen(self, event):
-        width = event.w
-        height = event.h
-        size = [width, height]
-        return pygame.display.set_mode(size, pygame.RESIZABLE)
+    def resize_screen(self, x, y):
+        self.width, self.height = x, y
+        self.size = [self.width, self.height]
+        return self.make_screen()
 
 
 class Image:
 
-    def __init__(self, filename):
+    def __init__(self, filename, screen):
 
         self.image_load = pygame.image.load(filename)
         self.image_rect = self.image_load.get_rect()
-        self.image_rect.x = WIDTH//2
-        self.image_rect.y = HEIGHT//2
+        self.image_rect.x = screen.width//2
+        self.image_rect.y = screen.height//2
         self.step_x = random.randint(10, 50)
         self.step_y = random.randint(10, 50)
 
     def render_image(self, screen):
         screen.blit(self.image_load, self.image_rect)
 
-    def move(self):
-        if (self.image_rect.x + 100) > WIDTH or self.image_rect.x < 0:
+    def move(self, screen):
+        if (self.image_rect.x + 100) > screen.width or self.image_rect.x < 0:
             self.step_x *= -1
 
-        if (self.image_rect.y + 100) > HEIGHT or self.image_rect.y < 0:
+        if (self.image_rect.y + 100) > screen.height or self.image_rect.y < 0:
             self.step_y *= -1
 
         self.image_rect.x += self.step_x
@@ -50,12 +45,12 @@ class Image:
 
 class Platform:
 
-    def __init__(self):
-        self.width = 200
-        self.height = 30
+    def __init__(self, screen):
+        self.width = screen.width//4
+        self.height = 10
         self.color = 85, 107, 47
-        self.x = 100
-        self.y = 500
+        self.x = 0
+        self.y = screen.height - self.height
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height), 0)
@@ -66,30 +61,29 @@ class Platform:
         else:
             self.x -= 50
 
-    def move_right(self):
-        if self.x + self.width >= WIDTH:
-            self.x = WIDTH - self.width
+    def move_right(self, screen):
+        if self.x + self.width >= screen.width:
+            self.x = screen.width - self.width
         else:
             self.x += 50
 
 
 def main():
     pygame.init()
-    sc = Screen() # Surface
-    ball = Image('basketball.png')
-    screen = sc.make_screen() # screen itself
-    platform = Platform()
+    screen = Screen() # Surface
+    ball = Image('basketball.png', screen)
+    surface = screen.make_screen() # screen itself
+    platform = Platform(screen)
     gameover = False
     d_is_pressed = False # Переменные для постоянного движения платформы при длительном нажатии
     a_is_pressed = False
 
     while not gameover:
-        screen.fill(sc.bg_color)           #Обновление окна
-        for event in pygame.event.get():   #Отследить закрытие окна
-            if event.type == pygame.QUIT:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:           #Отследить закрытие окна
                 gameover = True
             elif event.type == pygame.VIDEORESIZE:
-                screen = sc.resize_screen(event)
+                surface = screen.resize_screen(event.w, event.h)
             elif event.type == pygame.KEYDOWN:
                 if chr(event.key) == 'a':
                     a_is_pressed = True
@@ -101,12 +95,13 @@ def main():
                 elif chr(event.key) == 'd':
                     d_is_pressed = False
         if d_is_pressed:
-            platform.move_right()
+            platform.move_right(screen)
         elif a_is_pressed:
             platform.move_left()
-        ball.move()
-        platform.draw(screen)
-        ball.render_image(screen)
+        surface.fill(screen.bg_color)           #Обновление окна
+        ball.move(screen)
+        platform.draw(surface)
+        ball.render_image(surface)
         pygame.display.flip()
         pygame.time.wait(90)
 
