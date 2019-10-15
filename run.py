@@ -2,7 +2,7 @@ import pygame, sys
 from Game import Game
 
 
-def event_listener(game):
+def run_event_listener(game):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # Отследить закрытие окна
             game.game_over = True
@@ -24,7 +24,7 @@ def main():
     pygame.init()
     game = Game()
     while not game.game_over:
-        event_listener(game)
+        run_event_listener(game)
         game.run()           # Запуск игры
         pygame.display.flip()
         pygame.time.wait(90)
