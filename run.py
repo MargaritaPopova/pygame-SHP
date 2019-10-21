@@ -23,11 +23,12 @@ def run_event_listener(game):
 def main():
     pygame.init()
     game = Game()
+
     while not game.game_over:
         run_event_listener(game)
         game.run()           # Запуск игры
         pygame.display.flip()
-        pygame.time.wait(90)
+        pygame.time.wait(100)
 
     sys.exit(0)
 
