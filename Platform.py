@@ -8,7 +8,7 @@ class Platform:
         self.width = screen.width//4
         self.height = 10
         self.color = 85, 107, 47
-        self.x = randint(0, screen.width)
+        self.x = randint(0, screen.width-self.width)
         self.y = randint(0, screen.height)
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 

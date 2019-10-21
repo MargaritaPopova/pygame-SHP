@@ -42,7 +42,7 @@ class Game:
         self.surface.fill(self.screen.bg_color)
         self.move_platform()
         self.platform.draw(self.surface)
-        #self.run_multiple()
+        # self.run_multiple()
         self.ball.move(self.screen)
         self.ball.render_image(self.surface)
         self.process_collisions()
