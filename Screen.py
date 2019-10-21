@@ -4,8 +4,8 @@ import pygame
 class Screen:
 
     def __init__(self):
-        self.width = 400
-        self.height = 300
+        self.width = 800
+        self.height = 600
         self.size = self.width, self.height
         self.bg_color = 255, 255, 240
 
