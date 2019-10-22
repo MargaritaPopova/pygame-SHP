@@ -22,8 +22,11 @@ class Image:
 
         if (self.image_rect.x + 100) > screen.width or self.image_rect.x < 0:
             self.step_x *= -1
-        if (self.image_rect.y + 100) > screen.height or self.image_rect.y < 0:
+        if self.image_rect.y < 0 or (self.image_rect.y + 100) > screen.height:
             self.step_y *= -1
+
+    def touches_bottom(self, screen):
+        return (self.image_rect.y + 100) > screen.height
 
     def collision(self):
         self.step_x *= -1

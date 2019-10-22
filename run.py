@@ -20,13 +20,20 @@ def run_event_listener(game):
                 game.buttons['d_is_pressed'] = False
 
 
+def check_ball(game):
+    if game.ball.touches_bottom(game.screen):
+        game.game_over = True
+
+
 def main():
     pygame.init()
+    pygame.font.init()
     game = Game()
 
     while not game.game_over:
         run_event_listener(game)
         game.run()           # Запуск игры
+        check_ball(game)
         pygame.display.flip()
         pygame.time.wait(100)
 

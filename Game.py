@@ -1,6 +1,7 @@
 from Image import Image
 from Platform import Platform
 from Screen import Screen
+from Text import Text
 
 
 class Game:
@@ -13,6 +14,7 @@ class Game:
         self.game_over = False
         self.objects = []
         self.ball = Image(self.filename)
+        self.game_over_text = Text("Game over!")
 
         self.buttons = {
             'd_is_pressed': False,  # Переменные для постоянного движения платформы при длительном нажатии
@@ -38,6 +40,9 @@ class Game:
             ball.move(self.screen)
             ball.render_image(self.surface)
 
+    def game_is_over(self):
+        self.surface.blit(self.game_over_text.render_text(), (50, 100))
+
     def run(self):
         self.surface.fill(self.screen.bg_color)
         self.move_platform()
@@ -46,6 +51,9 @@ class Game:
         self.ball.move(self.screen)
         self.ball.render_image(self.surface)
         self.process_collisions()
+        if self.ball.touches_bottom(self.screen):
+            self.game_is_over()
+
 
 
 
